@@ -1,29 +1,29 @@
 import streamlit as st
 import pandas as pd
 from datetime import datetime
-import io
 
 # ==========================================
-# 1. PENGATURAN HALAMAN UTAMA
+# 1. INITIALIZATION & DATABASE CONFIGURATION
 # ==========================================
-st.set_page_config(page_title="Sistem PPLP SILEDENDEN", page_icon="🏫", layout="wide")
+st.set_page_config(page_title="PPLP SILE DENDEN", page_icon="🏫", layout="wide")
 
-# Inisialisasi Penyimpanan Data Sementara (Simulasi Database)
+# Validasi Database Sementara (Session State) agar data tetap aman saat berpindah menu
 if "kegiatan_list" not in st.session_state:
-    st.session_state.kegiatan_list = [{"judul": "Penerimaan Mahasiswa Baru 2025/2026", "tanggal": "08 Sep 2026", "isi": "Pendaftaran resmi dibuka!", "kategori": "Pengumuman"}]
+    st.session_state.kegiatan_list = [
+        {"judul": "Penerimaan Mahasiswa Baru 2025/2026", "tanggal": "08 Sep 2026", "isi": "Pendaftaran resmi dibuka! Silakan hubungi kontak admin.", "kategori": "Pengumuman"}
+    ]
 
 if "sertifikat_db" not in st.session_state:
-    # Contoh data awal sertifikat siswa
     st.session_state.sertifikat_db = {
-        "12345": {"nama": "Muhamad Johan Efendi", "tahun": "2024", "predikat": "Sangat Memuaskan", "program": "Butler"},
-        "67890": {"nama": "Suryani", "tahun": "2025", "predikat": "Dengan Pujian", "program": "Cashier"}
+        "12345": {"nama": "Muhamad Johan Efendi", "tahun": "2026", "predikat": "Sangat Memuaskan", "program": "Butler"},
+        "67890": {"nama": "Suryani", "tahun": "2026", "predikat": "Dengan Pujian", "program": "Cashier"}
     }
 
 if "absensi_siswa" not in st.session_state:
-    st.session_state.absensi_siswa = pd.DataFrame(columns=["Tanggal", "Nama Siswa", "Status"])
+    st.session_state.absensi_siswa = pd.DataFrame(columns=["Tanggal", "Jam Input", "Nama Siswa", "Status", "Keterangan"])
 
 if "absensi_guru" not in st.session_state:
-    st.session_state.absensi_guru = pd.DataFrame(columns=["Tanggal", "Nama Guru", "Status"])
+    st.session_state.absensi_guru = pd.DataFrame(columns=["Tanggal", "Jam Input", "Nama Guru", "Status", "Keterangan"])
 
 if "data_kas" not in st.session_state:
     st.session_state.data_kas = pd.DataFrame([
@@ -32,165 +32,125 @@ if "data_kas" not in st.session_state:
         {"Nama Siswa": "Lalu Ahmad", "Paket": "Platinum", "Tagihan": 15750000, "Status": "Lunas"},
     ])
 
-# Menu Navigasi Samping
+if "is_admin_logged_in" not in st.session_state:
+    st.session_state.is_admin_logged_in = False
+
+if "struktur_data" not in st.session_state:
+    st.session_state.struktur_data = {
+        "top": {"jabatan": "", "nama": "", "foto": None},
+        "mid_1": {"jabatan": "", "nama": "", "foto": None},
+        "mid_2": {"jabatan": "", "nama": "", "foto": None},
+        "bot_1": {"jabatan": "", "nama": "", "foto": None},
+        "bot_2": {"jabatan": "", "nama": "", "foto": None},
+        "bot_3": {"jabatan": "", "nama": "", "foto": None},
+        "bot_4": {"jabatan": "", "nama": "", "foto": None},
+    }
+
+# ==========================================
+# 2. CUSTOM VISUAL STYLE (CSS SYSTEM)
+# ==========================================
+st.markdown("""
+    <style>
+        [data-testid="stSidebar"] { background-color: #FFFFFF !important; border-right: 1px solid #E5E7EB !important; }
+        .block-container { padding-top: 0.5rem !important; padding-bottom: 5rem !important; }
+        .section-card { background: white; border-radius: 10px; padding: 18px; margin-bottom: 15px; box-shadow: 0 2px 8px rgba(0,0,0,0.06); border: 1px solid #E5E7EB; }
+        .section-title { color: #1E3A8A; font-size: 16px; font-weight: 800; border-bottom: 2px solid #FBBF24; padding-bottom: 6px; margin-bottom: 12px; }
+        
+        @keyframes slideLeftRight { 0%, 100% { transform: translateX(-1%); } 50% { transform: translateX(1%); } }
+        .welcome-banner { background-color: #FBBF24; color: #1E3A8A; text-align: center; padding: 10px; font-weight: 800; font-size: 13px; border-radius: 6px; margin-bottom: 15px; animation: slideLeftRight 6s infinite ease-in-out; border: 2px solid #1E3A8A; }
+        
+        .header-lembaga { text-align: center; background: linear-gradient(135deg, #1E40AF 0%, #1E3A8A 100%); color: white; padding: 20px 15px; border-radius: 12px; margin-bottom: 20px; border-bottom: 5px solid #FBBF24; }
+        .header-subtitle { font-size: 11px; letter-spacing: 1px; color: #FBBF24; font-weight: bold; text-transform: uppercase; margin-bottom: 5px; }
+        
+        .paket-box { border-radius: 8px; padding: 12px; margin-bottom: 10px; border-left: 5px solid #FBBF24; }
+        .paket-reguler { background-color: #FEF3C7; border-left-color: #D97706; }
+        .paket-gold { background-color: #FFFBEB; border-left-color: #F59E0B; }
+        .paket-platinum { background-color: #EFF6FF; border-left-color: #2563EB; }
+        .paket-title { font-weight: 800; font-size: 14px; margin-bottom: 5px; color: #1F2937; }
+        .paket-harga { font-size: 15px; font-weight: 800; color: #1E3A8A; text-align: right; }
+
+        .prog-badge { display: block; background-color: #F3F4F6; color: #1F2937; padding: 8px 12px; margin-bottom: 6px; border-radius: 6px; font-size: 13px; font-weight: 600; border-left: 3px solid #1E3A8A; }
+        .sup-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(130px, 1fr)); gap: 10px; margin-top: 10px; }
+        .sup-item { background: #FFFFFF; border: 1px solid #E5E7EB; border-left: 4px solid #1E3A8A; padding: 12px 8px; border-radius: 6px; font-size: 12px; font-weight: bold; text-align: center; color: #374151; box-shadow: 0 1px 3px rgba(0,0,0,0.05); }
+        .aso-badge { display: inline-block; background-color: #EFF6FF; color: #1E40AF; padding: 4px 10px; margin: 3px; border-radius: 4px; font-size: 11px; font-weight: bold; border: 1px solid #BFDBFE; }
+        
+        .whatsapp-float { position: fixed; bottom: 20px; right: 20px; background-color: #25D366; color: white !important; border-radius: 50px; text-align: center; padding: 12px 20px; font-weight: bold; font-size: 14px; box-shadow: 2px 4px 12px rgba(0,0,0,0.2); z-index: 9999; text-decoration: none; display: flex; align-items: center; gap: 8px; }
+    </style>
+""", unsafe_allow_html=True)
+
+# ==========================================
+# 3. HELPER FUNCTIONS (KUMPULAN FUNGSI MODUL)
+# ==========================================
+def render_kotak_staf(key_id, width_px, height_px, label_ukuran):
+    """Fungsi pembantu untuk merender kotak bagan organisasi secara konsisten"""
+    staf = st.session_state.struktur_data[key_id]
+    with st.container(border=True):
+        if staf['jabatan']:
+            st.markdown(f"<p style='margin:0 0 5px 0; font-size:11px; font-weight:bold; color:#1E3A8A; text-align:center;'>{staf['jabatan']}</p>", unsafe_allow_html=True)
+        if staf["foto"] is not None:
+            st.image(staf["foto"], use_container_width=True)
+        else:
+            st.markdown(f'<div style="width:100%; height:{height_px}px; background-color:#E5E7EB; border:2px dashed #9CA3AF; border-radius:4px; display:flex; align-items:center; justify-content:center; color:#6B7280; margin:5px 0;"><span style="font-size:18px;">📷</span><span style="font-size:9px;">({label_ukuran})</span></div>', unsafe_allow_html=True)
+        if staf['nama']:
+            st.markdown(f"<p style='margin:5px 0 0 0; font-size:12px; font-weight:800; text-align:center; color:#374151;'>{staf['nama']}</p>", unsafe_allow_html=True)
+        
+        if st.session_state.is_admin_logged_in:
+            st.divider()
+            with st.popover("⚙️ Kelola Kotak", use_container_width=True):
+                input_jabatan = st.text_input("Input Jabatan:", value=staf["jabatan"], key=f"jab_{key_id}")
+                input_nama = st.text_input("Input Nama:", value=staf["nama"], key=f"txt_{key_id}")
+                input_foto = st.file_uploader("Upload Foto:", type=["png", "jpg", "jpeg"], key=f"file_{key_id}")
+                c_b1, c_b2 = st.columns(2)
+                if c_b1.button("Simpan 💾", key=f"save_{key_id}", use_container_width=True):
+                    st.session_state.struktur_data[key_id]["jabatan"] = input_jabatan
+                    st.session_state.struktur_data[key_id]["nama"] = input_nama
+                    if input_foto is not None: st.session_state.struktur_data[key_id]["foto"] = input_foto
+                    st.rerun()
+                if c_b2.button("Hapus 🗑️", key=f"del_{key_id}", use_container_width=True):
+                    st.session_state.struktur_data[key_id] = {"jabatan": "", "nama": "", "foto": None}
+                    st.rerun()
+
+# ==========================================
+# 4. SIDEBAR NAVIGATION SYSTEM
+# ==========================================
 with st.sidebar:
-    st.markdown("<h2 style='text-align: center; color: #1E3A8A;'>PPLP SILEDENDEN LOMBOK</h2>", unsafe_allow_html=True)
-    st.divider()
+    st.markdown("""
+        <div style="display: flex; align-items: center; gap: 12px; padding: 10px 5px; margin-bottom: 20px; border-bottom: 2px solid #F3F4F6;">
+            <span style="font-size: 24px;">🏫</span>
+            <div style="font-size: 14px; font-weight: 700; color: #1F2937; line-height: 1.2;">PPLP SILEDENDEN<br><span style="font-size: 11px; font-weight: 400; color: #6B7280;">Lombok, NTB</span></div>
+        </div>
+    """, unsafe_allow_html=True)
+    
     menu = st.radio(
         "MENU UTAMA:",
-        ["Brosur & Berita", "Verifikasi & Unduh Sertifikat", "Sistem Absensi (Siswa & Guru)", "Audit Kas Lembaga (Diagram)", "Panel Admin (Input Data)"]
+        ["PROFIL LEMBAGA", "PROGRAM & BIAYA", "SUPPORTED BY", "ABSENSI ELEKTRONIK", "KAS LEMBAGA", "VERIFIKASI SERTIFIKAT"]
     )
-    st.divider()
-    st.caption("Sistem Manajemen Terintegrasi v2.0")
-
-# ==========================================
-# 2. MENU: BROSUR & BERITA
-# ==========================================
-if menu == "Brosur & Berita":
-    st.title("🏫 Brosur Digital & Informasi Lembaga")
-    st.markdown("<p style='font-style: italic; background-color: #FEF3C7; padding: 10px; border-radius: 5px;'><b>Izin Dinas Pendidikan No:</b> 421.9/563/Disdik</p>", unsafe_allow_html=True)
-    
-    # Rangkuman Singkat Brosur
-    col1, col2 = st.columns(2)
-    with col1:
-        st.write("### 💼 7 Program Keterampilan")
-        st.markdown("1. F&B Product | 2. F&B Service | 3. Front Office | 4. House Keeping | 5. English For Jobs | 6. Tours & Travel | 7. Barista")
-    with col2:
-        st.write("### 💳 Investasi Pendidikan")
-        st.markdown("* **Paket Reguler:** Rp 7.000.000,-\n* **Paket Gold:** Rp 9.750.000,-\n* **Paket Platinum:** Rp 15.750.000,-")
-        
-    st.divider()
-    st.write("### 📰 Papan Informasi & Kegiatan")
-    for idx, keg in enumerate(reversed(st.session_state.kegiatan_list)):
-        st.info(f"**{keg['judul']}** ({keg['tanggal']}) - *Kategori: {keg['kategori']}*\n\n{keg['isi']}")
-
-# ==========================================
-# 3. MENU: VERIFIKASI & UNDUH SERTIFIKAT (PUBLIK)
-# ==========================================
-elif menu == "Verifikasi & Unduh Sertifikat":
-    st.title("🎓 Sistem Verifikasi Sertifikat Kelulusan")
-    st.write("Silakan masukkan data kelulusan Anda untuk memverifikasi keaslian dan mengunduh sertifikat digital.")
-    
-    col_s1, col_s2, col_s3 = st.columns(3)
-    with col_s1:
-        search_id = st.text_input("Masukkan Nomor ID Siswa:")
-    with col_s2:
-        search_nama = st.text_input("Masukkan Nama Lengkap:")
-    with col_s3:
-        search_tahun = st.text_input("Masukkan Tahun Lulus:")
-
-    if st.button("Cari Sertifikat 🔍"):
-        if search_id in st.session_state.sertifikat_db:
-            data = st.session_state.sertifikat_db[search_id]
-            # Validasi kecocokan Nama dan Tahun Lulus
-            if search_nama.lower() in data["nama"].lower() and search_tahun == data["tahun"]:
-                st.success("✅ DATA SERTIFIKAT DITEMUKAN & VALID!")
-                
-                # Menampilkan rincian data
-                st.markdown(f"""
-                * **Nama Lulusan:** {data['nama']}
-                * **Nomor ID:** {search_id}
-                * **Program Studi:** {data['program']}
-                * **Tahun Kelulusan:** {data['tahun']}
-                * **Predikat Kelulusan:** {data['predikat']}
-                """)
-                
-                # --- FITUR GENERATE FILE TEKS (Pondasi Download) ---
-                # Menggunakan file Txt/Markdown sederhana sebagai simulasi download instan di HP
-                isi_sertifikat = f"SERTIFIKAT KELULUSAN RESMI\nPPLP SILEDENDEN LOMBOK\n\nNama: {data['nama']}\nID: {search_id}\nProgram: {data['program']}\nTahun: {data['tahun']}\nPredikat: {data['predikat']}\n\nValiditas Terverifikasi Sistem Elektronik."
-                st.download_button(
-                    label="📥 Download Sertifikat Resmi",
-                    data=isi_sertifikat,
-                    file_name=f"Sertifikat_{data['nama']}.txt",
-                    mime="text/plain"
-                )
-            else:
-                st.error("❌ Data nama atau tahun lulus tidak cocok dengan Nomor ID.")
-        else:
-            st.error("❌ Nomor ID Siswa tidak terdaftar di sistem kami.")
-
-# ==========================================
-# 4. MENU: SISTEM ABSENSI (OTOMATIS AUDIT)
-# ==========================================
-elif menu == "Sistem Absensi (Siswa & Guru)":
-    st.title("📅 Presensi Elektronik & Audit Kehadiran Otomatis")
-    
-    tab1, tab2 = st.tabs(["Absensi Siswa", "Absensi Guru"])
-    
-    with tab1:
-        st.subheader("Formulir Absen Siswa Harian")
-        with st.form("form_absen_siswa"):
-            nama_s = st.text_input("Nama Siswa:")
-            status_s = st.radio("Status Kehadiran:", ["Hadir", "Izin", "Sakit", "Alpa"], horizontal=True)
-            btn_s = st.form_submit_button("Simpan Absen Siswa")
-            if btn_s and nama_s:
-                new_row = {"Tanggal": datetime.now().strftime("%d-%m-%Y"), "Nama Siswa": nama_s, "Status": status_s}
-                st.session_state.absensi_siswa = pd.concat([st.session_state.absensi_siswa, pd.DataFrame([new_row])], ignore_index=True)
-                st.success(f"Absen {nama_s} berhasil dicatat!")
-
-        st.write("#### 📊 Audit Otomatis Kehadiran Siswa")
-        if not st.session_state.absensi_siswa.empty:
-            st.dataframe(st.session_state.absensi_siswa, use_container_width=True)
-            # Hitung Otomatis Jumlah
-            audit_s = st.session_state.absensi_siswa["Status"].value_counts()
-            st.write(f"**Total Audit:** Hadir: {audit_s.get('Hadir', 0)} | Izin: {audit_s.get('Izin', 0)} | Sakit: {audit_s.get('Sakit', 0)} | Alpa: {audit_s.get('Alpa', 0)}")
-        else:
-            st.info("Belum ada data absensi hari ini.")
-
-    with tab2:
-        st.subheader("Formulir Absen Guru / Instruktur")
-        with st.form("form_absen_guru"):
-            nama_g = st.text_input("Nama Guru:")
-            status_g = st.radio("Status:", ["Hadir", "Izin", "Alpa"], horizontal=True, key="absen_g")
-            btn_g = st.form_submit_button("Simpan Absen Guru")
-            if btn_g and nama_g:
-                new_row_g = {"Tanggal": datetime.now().strftime("%d-%m-%Y"), "Nama Guru": nama_g, "Status": status_g}
-                st.session_state.absensi_guru = pd.concat([st.session_state.absensi_guru, pd.DataFrame([new_row_g])], ignore_index=True)
-                st.success(f"Absen Guru {nama_g} berhasil dicatat!")
-
-        st.write("#### 📊 Audit Otomatis Kehadiran Guru")
-        if not st.session_state.absensi_guru.empty:
-            st.dataframe(st.session_state.absensi_guru, use_container_width=True)
-            audit_g = st.session_state.absensi_guru["Status"].value_counts()
-            st.write(f"**Total Audit Guru:** Hadir: {audit_g.get('Hadir', 0)} | Izin: {audit_g.get('Izin', 0)} | Alpa: {audit_g.get('Alpa', 0)}")
-        else:
-            st.info("Belum ada data absensi guru hari ini.")
-
-# ==========================================
-# 5. MENU: AUDIT KAS LEMBAGA (DIAGRAM LINGKARAN)
-# ==========================================
-elif menu == "Audit Kas Lembaga (Diagram)":
-    st.title("📈 Laporan Keuangan & Keuangan Kas Pembayaran Siswa")
-    st.write("Audit otomatis status pelunasan biaya pendidikan siswa berdasarkan data kas masuk.")
-    
-    st.dataframe(st.session_state.data_kas, use_container_width=True)
-    
-    # Hitung Jumlah Lunas dan Belum Lunas
-    hitung_status = st.session_state.data_kas["Status"].value_counts()
-    lunas = hitung_status.get("Lunas", 0)
-    belum_lunas = hitung_status.get("Belum Lunas", 0)
     
     st.divider()
-    st.write("### 📊 Audit Diagram Lingkaran Status Pembayaran")
-    
-    # Membuat diagram lingkaran menggunakan komponen bawaan Streamlit (Chart Bar/Area karena kesederhanaan HP, atau pie menggunakan Dataframe)
-    chart_data = pd.DataFrame({
-        "Status Pembayaran": ["Lunas", "Belum Lunas"],
-        "Jumlah Siswa": [lunas, belum_lunas]
-    })
-    
-    # Tampilan visual ringkasan kas keuangan
-    c1, c2 = st.columns(2)
-    with c1:
-        st.write("#### Grafik Batang Distribusi Pelunasan Kas:")
-        st.bar_chart(chart_data.set_index("Status Pembayaran"))
-    with c2:
-        st.write("#### 🧮 Ringkasan Nominal Audit Anggaran:")
-        total_lunas_idr = st.session_state.data_kas[st.session_state.data_kas["Status"] == "Lunas"]["Tagihan"].sum()
-        total_belum_idr = st.session_state.data_kas[st.session_state.data_kas["Status"] == "Belum Lunas"]["Tagihan"].sum()
-        
-        st.metric("Total Dana Kas Masuk (Lunas)", f"Rp {total_lunas_idr:,}")
-        st.metric("Total Piutang Anggaran (Belum Lunas)", f"Rp {total_belum_idr:,}")
+    if st.session_state.is_admin_logged_in:
+        st.success("🔒 Sesi Admin Aktif")
+        if st.button("Logout Sistem Admin"):
+            st.session_state.is_admin_logged_in = False
+            st.rerun()
+    else:
+        st.caption("🔓 Mode Akses Publik")
 
 # ==========================================
-# 6. MENU: PANEL ADMIN INPUT DATA
+# 5. PUBLIC CORE MENUS CONTROLLER
+# ==========================================
+
+# --- MENU: PROFIL LEMBAGA ---
+if menu == "PROFIL LEMBAGA":
+    st.markdown('<div class="welcome-banner">✨ PUSAT PENDIDIKAN DAN LATIHAN PARIWISATA SILE DENDEN LOMBOK ✨</div>', unsafe_allow_html=True)
+    st.markdown("""
+        <div class="header-lembaga">
+            <div class="header-subtitle">Yayasan Sile Denden Nusantara</div>
+            <h2 style='color: #FBBF24; font-size: 22px; font-weight: 900; margin: 0;'>PROFIL & STRUKTUR</h2>
+        </div>
+    """, unsafe_allow_html=True)
+    
+    tab_prof1, tab_prof2 = st.tabs(["Profil Lembaga", "Struktur Organisasi"])
+    
+    with tab_prof1:
+        st.markdown('<div class="section-card">', unsafe_allow_html=True)
+        st.markdown('<div class="section-title">📌 Tentang PPLP Sile Denden</div>', unsafe_allow_html=True)
