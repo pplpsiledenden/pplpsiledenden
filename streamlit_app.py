@@ -37,34 +37,9 @@ if "is_admin_logged_in" not in st.session_state:
     st.session_state.is_admin_logged_in = False
 
 # ==========================================
-# 2. SISTEM VISUAL (CSS TEMA BROSUR & HP)
+# 2. SISTEM VISUAL CSS STYLE
 # ==========================================
-st.markdown("""
-    <style>
-        [data-testid="stSidebar"] { background-color: #F8FAFC !important; border-right: 1px solid #E2E8F0 !important; }
-        .header-lembaga { text-align: center; background: linear-gradient(135deg, #1E40AF 0%, #1E3A8A 100%); color: white; padding: 15px; border-radius: 10px; margin-bottom: 15px; border-bottom: 4px solid #FBBF24; }
-        .header-subtitle { font-size: 11px; letter-spacing: 1px; color: #FBBF24; font-weight: bold; text-transform: uppercase; }
-        .section-card { background: #FFFFFF; border-radius: 8px; padding: 15px; margin-bottom: 15px; border-left: 4px solid #1E3A8A; box-shadow: 0 1px 3px rgba(0,0,0,0.1); }
-        .section-title-custom { color: #1E3A8A; font-size: 15px; font-weight: bold; margin-bottom: 8px; text-transform: uppercase; border-bottom: 1px solid #E2E8F0; padding-bottom: 4px; }
-        .box-bagan-vertikal { background: #FFFFFF; border: 1px solid #CBD5E1; border-radius: 8px; padding: 10px; text-align: center; box-shadow: 0 2px 4px rgba(0,0,0,0.05); margin-bottom: 10px; }
-        .box-bagan-vertikal.node-direktur { border-top: 4px solid #EF4444; }
-        .box-bagan-vertikal.node-wadir { border-top: 4px solid #F59E0B; }
-        .box-bagan-vertikal.node-staf { border-top: 4px solid #10B981; }
-        .text-jabatan { font-size: 10px; font-weight: bold; color: #64748B; margin: 0; text-transform: uppercase; }
-        .text-nama { font-size: 13px; font-weight: 800; color: #1E293B; margin: 4px 0 0 0; }
-        .placeholder-foto { width: 100px; height: 120px; background-color: #E2E8F0; border: 2px dashed #94A3B8; border-radius: 6px; margin: 8px auto; display: flex; align-items: center; justify-content: center; color: #64748B; font-size: 10px; }
-        .jurusan-item { background: #F1F5F9; padding: 8px 12px; margin-bottom: 6px; border-radius: 4px; font-size: 13px; font-weight: bold; color: #1E3A8A; border-left: 3px solid #3B82F6; }
-        .paket-box { border-radius: 8px; padding: 12px; margin-bottom: 15px; border-left: 5px solid #FBBF24; box-shadow: 0 1px 3px rgba(0,0,0,0.05); }
-        .paket-reguler { background-color: #FEF3C7; border-left-color: #D97706; }
-        .paket-gold { background-color: #FFFBEB; border-left-color: #F59E0B; }
-        .paket-platinum { background-color: #EFF6FF; border-left-color: #2563EB; }
-        .paket-title { font-weight: 800; font-size: 14px; color: #1F2937; text-transform: uppercase; }
-        .paket-harga { font-size: 15px; font-weight: 800; color: #1E3A8A; margin-top: 5px; }
-        .sup-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(110px, 1fr)); gap: 6px; }
-        .sup-item { background: #FFFFFF; border: 1px solid #E2E8F0; padding: 8px; border-radius: 4px; font-size: 11px; font-weight: bold; text-align: center; color: #475569; box-shadow: 0 1px 2px rgba(0,0,0,0.02); }
-        .whatsapp-float { position: fixed; bottom: 15px; right: 15px; background-color: #25D366; color: white !important; border-radius: 30px; padding: 8px 14px; font-weight: bold; font-size: 12px; box-shadow: 0 2px 8px rgba(0,0,0,0.2); z-index: 9999; text-decoration: none; display: flex; align-items: center; gap: 5px; }
-    </style>
-""", unsafe_allow_html=True)
+st.markdown('<style>[data-testid="stSidebar"] { background-color: #F8FAFC !important; border-right: 1px solid #E2E8F0 !important; } .header-lembaga { text-align: center; background: linear-gradient(135deg, #1E40AF 0%, #1E3A8A 100%); color: white; padding: 15px; border-radius: 10px; margin-bottom: 15px; border-bottom: 4px solid #FBBF24; } .header-subtitle { font-size: 11px; letter-spacing: 1px; color: #FBBF24; font-weight: bold; text-transform: uppercase; } .section-card { background: #FFFFFF; border-radius: 8px; padding: 15px; margin-bottom: 15px; border-left: 4px solid #1E3A8A; box-shadow: 0 1px 3px rgba(0,0,0,0.1); } .section-title-custom { color: #1E3A8A; font-size: 15px; font-weight: bold; margin-bottom: 8px; text-transform: uppercase; border-bottom: 1px solid #E2E8F0; padding-bottom: 4px; } .box-bagan-vertikal { background: #FFFFFF; border: 1px solid #CBD5E1; border-radius: 8px; padding: 10px; text-align: center; box-shadow: 0 2px 4px rgba(0,0,0,0.05); margin-bottom: 10px; } .box-bagan-vertikal.node-direktur { border-top: 4px solid #EF4444; } .box-bagan-vertikal.node-wadir { border-top: 4px solid #F59E0B; } .box-bagan-vertikal.node-staf { border-top: 4px solid #10B981; } .text-jabatan { font-size: 10px; font-weight: bold; color: #64748B; margin: 0; text-transform: uppercase; } .text-nama { font-size: 13px; font-weight: 800; color: #1E293B; margin: 4px 0 0 0; } .placeholder-foto { width: 100px; height: 120px; background-color: #E2E8F0; border: 2px dashed #94A3B8; border-radius: 6px; margin: 8px auto; display: flex; align-items: center; justify-content: center; color: #64748B; font-size: 10px; } .jurusan-item { background: #F1F5F9; padding: 8px 12px; margin-bottom: 6px; border-radius: 4px; font-size: 13px; font-weight: bold; color: #1E3A8A; border-left: 3px solid #3B82F6; } .paket-box { border-radius: 8px; padding: 12px; margin-bottom: 15px; border-left: 5px solid #FBBF24; box-shadow: 0 1px 3px rgba(0,0,0,0.05); } .paket-reguler { background-color: #FEF3C7; border-left-color: #D97706; } .paket-gold { background-color: #FFFBEB; border-left-color: #F59E0B; } .paket-platinum { background-color: #EFF6FF; border-left-color: #2563EB; } .paket-title { font-weight: 800; font-size: 14px; color: #1F2937; text-transform: uppercase; } .paket-harga { font-size: 15px; font-weight: 800; color: #1E3A8A; margin-top: 5px; } .sup-item { background: #FFFFFF; border: 1px solid #E2E8F0; padding: 8px; border-radius: 4px; font-size: 11px; font-weight: bold; text-align: center; color: #475569; box-shadow: 0 1px 2px rgba(0,0,0,0.02); } .whatsapp-float { position: fixed; bottom: 15px; right: 15px; background-color: #25D366; color: white !important; border-radius: 30px; padding: 8px 14px; font-weight: bold; font-size: 12px; box-shadow: 0 2px 8px rgba(0,0,0,0.2); z-index: 9999; text-decoration: none; display: flex; align-items: center; gap: 5px; }</style>', unsafe_allow_html=True)
 
 # Fungsi Pembantu Render Kotak Vertikal Struktur Organisasi
 def render_kotak_vertikal(key_id, class_node="node-staf", label_def="STAF"):
@@ -134,15 +109,18 @@ st.markdown('<div class="header-lembaga"><div class="header-subtitle">PUSAT PEND
 # ------------------------------------------
 if menu == "1. PROFIL":
     if sub_menu == "Sub-Fitur A: Profil Lembaga":
-        st.markdown("""
-        <div class="section-card">
-            <div class="section-title-custom">Tentang PPLP Sile Denden Lombok</div>
-            <p style="font-size:12px; color:#334155; line-height:1.6; text-align:justify; margin:0 0 15px 0;">
-                Persaingan kerja global dan jejak digital sistem yang semakin canggih sangat dibutuhkan Sumber Daya Manusia (SDM) yang handal, siap pakai dan berdaya saing. 
-                PPLP Sile Denden dengan Visi & Misi Membantu Pemerintah yaitu mencerdaskan kehidupan bangsa Indonesia untuk mendapatkan pekerjaan yang layak. 
-            </p>
-            <div class="section-title-custom" style="font-size:13px; border:none; margin-top:10px;">🎯 Visi & Misi</div>
-            <p style="font-size:12px; color:#334155; line-height:1.6; margin:0;">
-                Membantu program Pemerintah dalam menyerap dan mencerdaskan kehidupan bangsa, mengurangi angka pengangguran, serta menyiapkan tenaga kerja terampil, profesional, berdedikasi tinggi, berakhlak mulia di bidang industri perhotelan dan pariwisata baik skala nasional maupun internasional.
-            </p>
-        </div>
+        with st.container(border=True):
+            st.markdown('<div class="section-title-custom">Tentang PPLP Sile Denden Lombok</div>', unsafe_allow_html=True)
+            st.write("Persaingan kerja global dan jejak digital sistem yang semakin canggih sangat dibutuhkan Sumber Daya Manusia (SDM) yang handal, siap pakai dan berdaya saing. PPLP Sile Denden dengan Visi & Misi Membantu Pemerintah yaitu mencerdaskan kehidupan bangsa Indonesia untuk mendapatkan pekerjaan yang layak.")
+            
+            st.markdown('<div class="section-title-custom" style="margin-top:15px;">🎯 Visi & Misi</div>', unsafe_allow_html=True)
+            st.write("Membantu program Pemerintah dalam menyerap dan mencerdaskan kehidupan bangsa, mengurangi angka pengangguran, serta menyiapkan tenaga kerja terampil, profesional, berdedikasi tinggi, berakhlak mulia di bidang industri perhotelan dan pariwisata baik skala nasional maupun internasional.")
+        
+    elif sub_menu == "Sub-Fitur B: Structure organisasi":
+        st.markdown('<div class="section-card"><div class="section-title-custom">Bagan Struktur Organisasi (Memanjang Ke Atas)</div></div>', unsafe_allow_html=True)
+        
+        c_v1, c_v2, c_v3 = st.columns(3)
+        with c_v2: render_kotak_vertikal("top", "node-direktur", "DIREKTUR")
+            
+        st.write("<div style='text-align:center; color:#CBD5E1; font-weight:bold; margin:-5px 0;'>▼</div>", unsafe_allow_html=True)
+        
