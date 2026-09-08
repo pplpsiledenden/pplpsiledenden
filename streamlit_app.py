@@ -96,7 +96,6 @@ def render_kotak_staf(key_id, width_px, height_px, label_ukuran):
         
         if st.session_state.is_admin_logged_in:
             st.divider()
-            # Ditambahkan unique key dinamis berbasis key_id agar tidak terjadi DuplicateWidgetID
             with st.popover("⚙️ Kelola Kotak", use_container_width=True, key=f"pop_{key_id}"):
                 input_jabatan = st.text_input("Input Jabatan:", value=staf["jabatan"], key=f"jab_{key_id}")
                 input_nama = st.text_input("Input Nama:", value=staf["nama"], key=f"txt_{key_id}")
@@ -106,7 +105,6 @@ def render_kotak_staf(key_id, width_px, height_px, label_ukuran):
                     st.session_state.struktur_data[key_id]["jabatan"] = input_jabatan
                     st.session_state.struktur_data[key_id]["nama"] = input_nama
                     if input_foto is not None: 
-                        # Konversi ke bytes agar aman disimpan di Session State
                         st.session_state.struktur_data[key_id]["foto"] = input_foto.read()
                     st.rerun()
                 if c_b2.button("Hapus 🗑️", key=f"del_{key_id}", use_container_width=True):
@@ -114,7 +112,7 @@ def render_kotak_staf(key_id, width_px, height_px, label_ukuran):
                     st.rerun()
 
 # ==========================================
-# 4. SIDEBAR NAVIGATION SYSTEM
+# 4. SIDEBAR NAVIGATION SYSTEM (Bagian yang tadinya rusak/terpotong)
 # ==========================================
 with st.sidebar:
     st.markdown("""
@@ -124,7 +122,6 @@ with st.sidebar:
         </div>
     """, unsafe_allow_html=True)
     
-    # Menu Navigasi Utama menggunakan st.radio standar Streamlit
     menu = st.radio(
         "Pilih Menu Layanan:",
         ["🏠 Beranda", "👥 Struktur Organisasi", "📝 Absensi", "💰 Cek Kas/Tagihan", "🎓 Verifikasi Sertifikat"]
@@ -132,13 +129,11 @@ with st.sidebar:
     
     st.divider()
     
-    # Area Sistem Admin login di Sidebar
     st.markdown("**🔐 Ruang Admin**")
     if not st.session_state.is_admin_logged_in:
         username = st.text_input("Username:", key="admin_user")
         password = st.text_input("Password:", type="password", key="admin_pass")
-        if st.button("Masuk Masuk 🚀", use_container_width=True):
-            # Ganti dengan kredensial yang Anda inginkan
+        if st.button("Masuk 🚀", use_container_width=True):
             if username == "admin" and password == "12345":
                 st.session_state.is_admin_logged_in = True
                 st.success("Login Berhasil!")
@@ -154,5 +149,9 @@ with st.sidebar:
 # ==========================================
 # 5. MAIN CONTENT ROUTER
 # ==========================================
+st.markdown('<div class="welcome-banner">Selamat Datang di Sistem Informasi PPLP SILE DENDEN</div>', unsafe_allow_html=True)
 
-# Banner Selamat Datang Universal
+if menu == "🏠 Beranda":
+    st.markdown('<div class="header-lembaga"><div class="header-subtitle">Pusat Pelatihan Kerja</div><h1>PPLP SILE DENDEN</h1></div>', unsafe_allow_html=True)
+    col1, col2 = st.columns(2)
+    with col1:
