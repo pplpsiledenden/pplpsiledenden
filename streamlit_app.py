@@ -116,7 +116,7 @@ if menu == "1. PROFIL":
             st.markdown('<div class="section-title-custom" style="margin-top:15px;">🎯 Visi & Misi</div>', unsafe_allow_html=True)
             st.write("Membantu program Pemerintah dalam menyerap dan mencerdaskan kehidupan bangsa, mengurangi angka pengangguran, serta menyiapkan tenaga kerja terampil, profesional, berdedikasi tinggi, berakhlak mulia di bidang industri perhotelan dan pariwisata baik skala nasional maupun internasional.")
         
-    elif sub_menu == "Sub-Fitur B: Structure organisasi":
+    elif sub_menu == "Sub-Fitur B: Struktur Organisasi":
         st.markdown('<div class="section-card"><div class="section-title-custom">Bagan Struktur Organisasi (Memanjang Ke Atas)</div></div>', unsafe_allow_html=True)
         
         c_v1, c_v2, c_v3 = st.columns(3)
