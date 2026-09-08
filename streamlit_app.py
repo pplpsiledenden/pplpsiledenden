@@ -62,7 +62,7 @@ with st.sidebar:
     st.markdown('<div style="text-align:center; padding:10px 0;"><span style="font-size:35px;">🏫</span><h4 style="color:#1E3A8A; margin:5px 0 0 0; font-weight:800; font-size:15px;">PPLP SILE DENDEN</h4></div>', unsafe_allow_html=True)
     st.divider()
     
-    # Kunci Menu Utama Menggunakan Huruf Kapital Pendek Saja
+    # Menu induk menggunakan huruf kapital
     menu = st.radio("MENU UTAMA:", ["PROFIL", "PROGRAM", "SUPPORTED BY", "ABSENSI", "KAS"])
     
     sub_menu = None
@@ -93,13 +93,11 @@ with st.sidebar:
             st.rerun()
 
 # ==========================================
-# 4. KONTEN UTAMA ROUTER (MENGGUNAKAN INDEKS PENDEK)
+# 4. KONTEN UTAMA ROUTER (PERBAIKAN KONDISIONAL STRIP KAPITAL)
 # ==========================================
 st.markdown('<div class="header-lembaga"><h2 style="margin:0; color:white; font-size:20px; font-weight:800;">SILE DENDEN LOMBOK</h2></div>', unsafe_allow_html=True)
 
-# ------------------------------------------
-# 1. MENU PROFIL
-# ------------------------------------------
+# 1. PERBAIKAN: Menggunakan Huruf Kapital Sesuai Variabel Menu di Atas
 if menu == "PROFIL":
     if sub_menu == "PROFIL LEMBAGA":
         with st.container(border=True):
