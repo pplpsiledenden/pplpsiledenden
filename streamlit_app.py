@@ -7,7 +7,6 @@ from datetime import datetime
 # ==========================================
 st.set_page_config(page_title="PPLP SILE DENDEN", page_icon="🏫", layout="wide")
 
-# Validasi Database Sementara (Session State) agar data tetap aman saat berpindah menu
 if "kegiatan_list" not in st.session_state:
     st.session_state.kegiatan_list = [
         {"judul": "Penerimaan Mahasiswa Baru 2025/2026", "tanggal": "08 Sep 2026", "isi": "Pendaftaran resmi dibuka! Silakan hubungi kontak admin.", "kategori": "Pengumuman"}
@@ -55,34 +54,23 @@ st.markdown("""
         .block-container { padding-top: 0.5rem !important; padding-bottom: 5rem !important; }
         .section-card { background: white; border-radius: 10px; padding: 18px; margin-bottom: 15px; box-shadow: 0 2px 8px rgba(0,0,0,0.06); border: 1px solid #E5E7EB; }
         .section-title { color: #1E3A8A; font-size: 16px; font-weight: 800; border-bottom: 2px solid #FBBF24; padding-bottom: 6px; margin-bottom: 12px; }
-        
-        @keyframes slideLeftRight { 0%, 100% { transform: translateX(-1%); } 50% { transform: translateX(1%); } }
         .welcome-banner { background-color: #FBBF24; color: #1E3A8A; text-align: center; padding: 10px; font-weight: 800; font-size: 13px; border-radius: 6px; margin-bottom: 15px; border: 2px solid #1E3A8A; }
-        
         .header-lembaga { text-align: center; background: linear-gradient(135deg, #1E40AF 0%, #1E3A8A 100%); color: white; padding: 20px 15px; border-radius: 12px; margin-bottom: 20px; border-bottom: 5px solid #FBBF24; }
         .header-subtitle { font-size: 11px; letter-spacing: 1px; color: #FBBF24; font-weight: bold; text-transform: uppercase; margin-bottom: 5px; }
-        
         .paket-box { border-radius: 8px; padding: 12px; margin-bottom: 10px; border-left: 5px solid #FBBF24; }
         .paket-reguler { background-color: #FEF3C7; border-left-color: #D97706; }
         .paket-gold { background-color: #FFFBEB; border-left-color: #F59E0B; }
         .paket-platinum { background-color: #EFF6FF; border-left-color: #2563EB; }
         .paket-title { font-weight: 800; font-size: 14px; margin-bottom: 5px; color: #1F2937; }
         .paket-harga { font-size: 15px; font-weight: 800; color: #1E3A8A; text-align: right; }
-
-        .prog-badge { display: block; background-color: #F3F4F6; color: #1F2937; padding: 8px 12px; margin-bottom: 6px; border-radius: 6px; font-size: 13px; font-weight: 600; border-left: 3px solid #1E3A8A; }
-        .sup-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(130px, 1fr)); gap: 10px; margin-top: 10px; }
-        .sup-item { background: #FFFFFF; border: 1px solid #E5E7EB; border-left: 4px solid #1E3A8A; padding: 12px 8px; border-radius: 6px; font-size: 12px; font-weight: bold; text-align: center; color: #374151; box-shadow: 0 1px 3px rgba(0,0,0,0.05); }
-        .aso-badge { display: inline-block; background-color: #EFF6FF; color: #1E40AF; padding: 4px 10px; margin: 3px; border-radius: 4px; font-size: 11px; font-weight: bold; border: 1px solid #BFDBFE; }
-        
         .whatsapp-float { position: fixed; bottom: 20px; right: 20px; background-color: #25D366; color: white !important; border-radius: 50px; text-align: center; padding: 12px 20px; font-weight: bold; font-size: 14px; box-shadow: 2px 4px 12px rgba(0,0,0,0.2); z-index: 9999; text-decoration: none; display: flex; align-items: center; gap: 8px; }
     </style>
 """, unsafe_allow_html=True)
 
 # ==========================================
-# 3. HELPER FUNCTIONS (KUMPULAN FUNGSI MODUL)
+# 3. HELPER FUNCTIONS
 # ==========================================
 def render_kotak_staf(key_id, width_px, height_px, label_ukuran):
-    """Fungsi pembantu untuk merender kotak bagan organisasi secara konsisten"""
     staf = st.session_state.struktur_data[key_id]
     with st.container(border=True):
         if staf['jabatan']:
@@ -112,7 +100,7 @@ def render_kotak_staf(key_id, width_px, height_px, label_ukuran):
                     st.rerun()
 
 # ==========================================
-# 4. SIDEBAR NAVIGATION SYSTEM (Bagian yang tadinya rusak/terpotong)
+# 4. SIDEBAR NAVIGATION SYSTEM
 # ==========================================
 with st.sidebar:
     st.markdown("""
@@ -155,3 +143,21 @@ if menu == "🏠 Beranda":
     st.markdown('<div class="header-lembaga"><div class="header-subtitle">Pusat Pelatihan Kerja</div><h1>PPLP SILE DENDEN</h1></div>', unsafe_allow_html=True)
     col1, col2 = st.columns(2)
     with col1:
+        st.subheader("📢 Pengumuman & Kegiatan Terbaru")
+        for keg in st.session_state.kegiatan_list:
+            with st.chat_message("user", avatar="🔔"):
+                st.markdown(f"**{keg['judul']}** ({keg['tanggal']})")
+                st.caption(f"Kategori: {keg['kategori']}")
+                st.write(keg['isi'])
+    with col2:
+        st.subheader("💼 Paket Program")
+        st.markdown('<div class="paket-box paket-reguler"><div class="paket-title">Reguler</div><div class="paket-harga">Rp 7.000.000</div></div>', unsafe_allow_html=True)
+        st.markdown('<div class="paket-box paket-gold"><div class="paket-title">Gold</div><div class="paket-harga">Rp 9.750.000</div></div>', unsafe_allow_html=True)
+        st.markdown('<div class="paket-box paket-platinum"><div class="paket-title">Platinum</div><div class="paket-harga">Rp 15.750.000</div></div>', unsafe_allow_html=True)
+
+elif menu == "👥 Struktur Organisasi":
+    st.subheader("Bagan Struktur Organisasi PPLP")
+    c_top1, c_top2, c_top3 = st.columns(3)
+    with c_top2: render_kotak_staf("top", 200, 150, "Direktur")
+    st.write("") 
+    c_mid1, c_mid2 = st.columns(2)
